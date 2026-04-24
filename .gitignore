@@ -205,3 +205,19 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Dados locais
+.db
+.sqlite
+.json
+.csv
+.xlsx
+
+# Recursos do Qt/PySide6
+_rc.py
+_ui.py
+
+# OS específicos
+.DS_Store
+Thumbs.db
+desktop.ini
