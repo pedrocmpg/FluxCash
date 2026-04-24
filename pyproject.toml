@@ -1,0 +1,25 @@
+[project]
+name = "fluxcash"
+version = "0.1.0"
+description = "Gestor financeiro pessoal com categorização automática"
+requires-python = ">=3.10"
+dependencies = ["PySide6>=6.6"]
+
+[project.scripts]
+fluxcash     = "main:run_gui"
+fluxcash-cli = "main:run_cli"
+
+[project.optional-dependencies]
+dev = ["mypy>=1.9", "ruff>=0.4"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
