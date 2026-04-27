@@ -1,12 +1,24 @@
 """
 FluxCash — Entry Point
 
-Escolha o modo de execução:
-  python main.py        → GUI (PySide6)
-  python main.py --cli  → Terminal
+Modos de execução:
+  python main.py            → Dashboard web (Streamlit)
+  python main.py --gui      → GUI desktop (PySide6)
+  python main.py --cli      → Terminal
 """
 
 import sys
+
+
+def run_dashboard() -> None:
+    """Inicia o dashboard Streamlit via subprocess."""
+    import subprocess
+    import os
+
+    subprocess.run(
+        [sys.executable, "-m", "streamlit", "run", "app.py", "--server.headless", "true"],
+        cwd=os.path.dirname(os.path.abspath(__file__)),
+    )
 
 
 def run_cli() -> None:
@@ -50,5 +62,7 @@ def run_gui() -> None:
 if __name__ == "__main__":
     if "--cli" in sys.argv:
         run_cli()
-    else:
+    elif "--gui" in sys.argv:
         run_gui()
+    else:
+        run_dashboard()
