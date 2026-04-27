@@ -216,6 +216,7 @@ __marimo__/
 # Recursos do Qt/PySide6
 _rc.py
 _ui.py
+venv/
 
 # OS específicos
 .DS_Store
