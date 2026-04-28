@@ -17,6 +17,8 @@ st.set_page_config(
 )
 
 # Imports após set_page_config
+from components.auth_screen import render_auth_screen        # noqa: E402
+from services.auth import get_current_user, sign_out         # noqa: E402
 from services.database import get_summary, get_transactions  # noqa: E402
 from services.supabase_client import get_supabase            # noqa: E402
 from styles import (                                          # noqa: E402
@@ -36,11 +38,26 @@ except Exception:
     st.stop()
 
 # ---------------------------------------------------------------------------
+# Guard de autenticação — exibe tela de login se não houver sessão
+# ---------------------------------------------------------------------------
+if not get_current_user():
+    render_auth_screen()
+    st.stop()
+
+# Botão de logout na sidebar
+with st.sidebar:
+    user = get_current_user()
+    st.caption(f"👤 {user.email}")
+    if st.button("Sair", use_container_width=True):
+        sign_out()
+
+# ---------------------------------------------------------------------------
 # Sidebar — identidade + filtros
 # ---------------------------------------------------------------------------
 st.sidebar.title("💸 FluxCash")
 st.sidebar.caption("Dashboard Financeiro")
 st.sidebar.divider()
+
 
 st.sidebar.header("Filtros")
 
