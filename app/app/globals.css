@@ -1,0 +1,70 @@
+@import 'tailwindcss';
+
+:root {
+  --color-bg-dark: #0d1117;
+  --color-bg-card: #161b22;
+  --color-bg-hover: #1c2128;
+  --color-border: #30363d;
+
+  --color-text: #e6edf3;
+  --color-text-secondary: #8b949e;
+
+  --color-primary: #4ade80;
+  --color-primary-hover: #22c55e;
+
+  --color-income: #22c55e;
+  --color-expense: #f87171;
+  --color-investment: #fbbf24;
+  --color-balance: #60a5fa;
+
+  --background: var(--color-bg-dark);
+  --foreground: var(--color-text);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-bg-dark: var(--color-bg-dark);
+  --color-bg-card: var(--color-bg-card);
+  --color-bg-hover: var(--color-bg-hover);
+  --color-border: var(--color-border);
+  --color-text: var(--color-text);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-primary: var(--color-primary);
+  --color-primary-hover: var(--color-primary-hover);
+  --color-income: var(--color-income);
+  --color-expense: var(--color-expense);
+  --color-investment: var(--color-investment);
+  --color-balance: var(--color-balance);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html,
+body {
+  background: var(--color-bg-dark);
+  color: var(--color-text);
+  font-family: 'Inter', var(--font-sans), system-ui, sans-serif;
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
