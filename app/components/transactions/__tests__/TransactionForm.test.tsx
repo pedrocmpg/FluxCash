@@ -19,6 +19,7 @@ const existingTransaction: Transaction = {
   type: 'despesa',
   investment_type: 'N/A',
   timestamp: '2026-01-01T10:00:00Z',
+  external_id: null,
 };
 
 describe('TransactionForm', () => {

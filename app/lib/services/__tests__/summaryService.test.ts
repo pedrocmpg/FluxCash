@@ -19,6 +19,7 @@ describe('SummaryService', () => {
         type: 'receita',
         investment_type: 'N/A',
         timestamp: '2026-01-01T00:00:00Z',
+        external_id: null,
       },
       {
         id: '2',
@@ -28,6 +29,7 @@ describe('SummaryService', () => {
         type: 'despesa',
         investment_type: 'N/A',
         timestamp: '2026-01-02T00:00:00Z',
+        external_id: null,
       },
       {
         id: '3',
@@ -37,6 +39,7 @@ describe('SummaryService', () => {
         type: 'despesa',
         investment_type: 'Conjunto',
         timestamp: '2026-01-03T00:00:00Z',
+        external_id: null,
       },
     ];
     mockGetTransactions.mockResolvedValue(transactions);

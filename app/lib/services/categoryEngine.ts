@@ -1,5 +1,7 @@
+import { DatabaseSync } from 'node:sqlite';
 import { Category, InvestmentType, TransactionCreate } from '@/types/transaction';
 import { normalizeText } from '@/lib/utils/normalizeText';
+import { MerchantRuleService } from './merchantRuleService';
 
 const CATEGORY_KEYWORDS: Record<Exclude<Category, 'Outros'>, string[]> = {
   Alimentação: [
@@ -41,12 +43,21 @@ const CATEGORY_KEYWORDS: Record<Exclude<Category, 'Outros'>, string[]> = {
 
 const CONJUNTO_REGEX = /#conjunto\b/i;
 
+function escapeRegExp(text: string): string {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function matchesKeyword(normalized: string, keyword: string): boolean {
+  const pattern = new RegExp(`(?<![a-z0-9])${escapeRegExp(keyword)}(?![a-z0-9])`);
+  return pattern.test(normalized);
+}
+
 export class CategoryEngine {
   static suggestCategory(description: string): Category {
     const normalized = normalizeText(description);
 
     for (const [category, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
-      if (keywords.some((keyword) => normalized.includes(keyword))) {
+      if (keywords.some((keyword) => matchesKeyword(normalized, keyword))) {
         return category as Category;
       }
     }
@@ -64,13 +75,17 @@ export class CategoryEngine {
 
   static processTransaction(
     payload: Partial<TransactionCreate> & { description: string },
+    db?: DatabaseSync,
   ): TransactionCreate {
     const isJoint = this.isJointTransaction(payload.description);
 
-    const category =
-      !payload.category || payload.category === 'Outros'
-        ? this.suggestCategory(payload.description)
-        : payload.category;
+    let category = payload.category;
+
+    if (!category || category === 'Outros') {
+      const ruleCategory =
+        db && payload.document ? MerchantRuleService.getCategory(db, payload.document) : null;
+      category = ruleCategory ?? this.suggestCategory(payload.description);
+    }
 
     const investment_type = isJoint ? 'Conjunto' : payload.investment_type || 'N/A';
 
@@ -80,6 +95,7 @@ export class CategoryEngine {
       category,
       type: payload.type ?? 'despesa',
       investment_type,
+      external_id: payload.external_id ?? null,
     };
   }
 }

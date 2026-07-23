@@ -1,4 +1,18 @@
+import { DatabaseSync } from 'node:sqlite';
 import { CategoryEngine } from '../categoryEngine';
+import { MerchantRuleService } from '../merchantRuleService';
+
+function makeTestDb(): DatabaseSync {
+  const db = new DatabaseSync(':memory:');
+  db.exec(`
+    CREATE TABLE merchant_rules (
+      document TEXT PRIMARY KEY,
+      category TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    )
+  `);
+  return db;
+}
 
 describe('CategoryEngine', () => {
   describe('suggestCategory', () => {
@@ -25,6 +39,20 @@ describe('CategoryEngine', () => {
     it('handles accents correctly', () => {
       expect(CategoryEngine.suggestCategory('Compra no açougue')).toBe('Alimentação');
       expect(CategoryEngine.suggestCategory('Consulta com médico')).toBe('Saúde');
+    });
+
+    it('does not match short keywords as a substring inside numbers', () => {
+      expect(
+        CategoryEngine.suggestCategory('TED SALARIO - 11122233396 FULANO DA SILVA'),
+      ).toBe('Receita');
+    });
+
+    it('matches short keywords when they appear as a standalone word', () => {
+      expect(CategoryEngine.suggestCategory('Corrida de 99')).toBe('Transporte');
+    });
+
+    it('does not match "gas" as a substring inside an unrelated word', () => {
+      expect(CategoryEngine.suggestCategory('Fulano da Silva')).toBe('Outros');
     });
   });
 
@@ -83,6 +111,39 @@ describe('CategoryEngine', () => {
       });
 
       expect(result.investment_type).toBe('N/A');
+    });
+
+    it('uses a saved merchant rule over keyword matching when a db and document are given', () => {
+      const db = makeTestDb();
+      MerchantRuleService.setCategory(db, '11222333000181', 'Alimentação');
+
+      const result = CategoryEngine.processTransaction(
+        {
+          value: 10,
+          description: 'PAGAMENTO PIX - 11222333000181 MERCADO DE ALIMENTOS',
+          type: 'despesa',
+          document: '11222333000181',
+        },
+        db,
+      );
+
+      expect(result.category).toBe('Alimentação');
+    });
+
+    it('falls back to keyword matching when no rule exists for the document', () => {
+      const db = makeTestDb();
+
+      const result = CategoryEngine.processTransaction(
+        {
+          value: 10,
+          description: 'Compra no supermercado',
+          type: 'despesa',
+          document: '12345678900',
+        },
+        db,
+      );
+
+      expect(result.category).toBe('Alimentação');
     });
   });
 });

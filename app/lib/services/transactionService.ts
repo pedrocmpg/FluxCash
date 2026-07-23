@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { Transaction, TransactionCreate } from '@/types/transaction';
 import { PaginatedTransactions, TransactionFilters } from '@/types/api';
 import { CategoryEngine } from './categoryEngine';
+import { MerchantRuleService } from './merchantRuleService';
 
 const MAX_RESULTS = 500;
 const DEFAULT_PAGE_SIZE = 50;
@@ -84,13 +85,13 @@ export class TransactionService {
     db: DatabaseSync,
     payload: TransactionCreate,
   ): Promise<Transaction> {
-    const enriched = CategoryEngine.processTransaction(payload);
+    const enriched = CategoryEngine.processTransaction(payload, db);
     const id = randomUUID();
-    const timestamp = new Date().toISOString();
+    const timestamp = payload.timestamp ?? new Date().toISOString();
 
     const stmt = db.prepare(
-      `INSERT INTO transactions (id, value, description, category, type, investment_type, timestamp)
-       VALUES (:id, :value, :description, :category, :type, :investment_type, :timestamp)`,
+      `INSERT INTO transactions (id, value, description, category, type, investment_type, timestamp, external_id)
+       VALUES (:id, :value, :description, :category, :type, :investment_type, :timestamp, :external_id)`,
     );
 
     stmt.run({
@@ -101,7 +102,12 @@ export class TransactionService {
       type: enriched.type,
       investment_type: enriched.investment_type!,
       timestamp,
+      external_id: enriched.external_id ?? null,
     });
+
+    if (payload.document && payload.category && payload.category !== 'Outros') {
+      MerchantRuleService.setCategory(db, payload.document, payload.category);
+    }
 
     return { id, timestamp, ...enriched } as Transaction;
   }
@@ -121,7 +127,7 @@ export class TransactionService {
       throw notFound;
     }
 
-    const enriched = CategoryEngine.processTransaction(payload);
+    const enriched = CategoryEngine.processTransaction(payload, db);
 
     db.prepare(
       `UPDATE transactions
@@ -137,7 +143,11 @@ export class TransactionService {
       investment_type: enriched.investment_type!,
     });
 
-    return { id, timestamp: existing.timestamp, ...enriched } as Transaction;
+    if (payload.document && payload.category && payload.category !== 'Outros') {
+      MerchantRuleService.setCategory(db, payload.document, payload.category);
+    }
+
+    return { id, timestamp: existing.timestamp, ...enriched, external_id: existing.external_id } as Transaction;
   }
 
   static async deleteTransaction(db: DatabaseSync, id: string): Promise<void> {

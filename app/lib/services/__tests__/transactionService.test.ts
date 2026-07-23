@@ -11,7 +11,15 @@ function makeTestDb(): DatabaseSync {
       category TEXT NOT NULL,
       type TEXT NOT NULL,
       investment_type TEXT NOT NULL,
-      timestamp TEXT NOT NULL
+      timestamp TEXT NOT NULL,
+      external_id TEXT
+    )
+  `);
+  db.exec(`
+    CREATE TABLE merchant_rules (
+      document TEXT PRIMARY KEY,
+      category TEXT NOT NULL,
+      updated_at TEXT NOT NULL
     )
   `);
   return db;
