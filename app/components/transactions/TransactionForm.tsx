@@ -15,14 +15,16 @@ import { useToastContext } from '@/contexts/ToastContext';
 type TransactionFormData = z.infer<typeof TransactionCreateSchema>;
 
 interface TransactionFormProps {
+  transaction?: Transaction;
   onSuccess?: (transaction: Transaction) => void;
 }
 
 const CONJUNTO_REGEX = /#conjunto\b/i;
 
-export function TransactionForm({ onSuccess }: TransactionFormProps) {
+export function TransactionForm({ transaction, onSuccess }: TransactionFormProps) {
   const { showSuccess, showError } = useToastContext();
   const [loading, setLoading] = useState(false);
+  const isEditing = Boolean(transaction);
 
   const {
     register,
@@ -32,7 +34,15 @@ export function TransactionForm({ onSuccess }: TransactionFormProps) {
     formState: { errors },
   } = useForm<TransactionFormData>({
     resolver: zodResolver(TransactionCreateSchema),
-    defaultValues: { investment_type: 'N/A', type: 'despesa' },
+    defaultValues: transaction
+      ? {
+          value: transaction.value,
+          description: transaction.description,
+          category: transaction.category,
+          type: transaction.type,
+          investment_type: transaction.investment_type,
+        }
+      : { investment_type: 'N/A', type: 'despesa' },
   });
 
   const description = watch('description') ?? '';
@@ -41,20 +51,24 @@ export function TransactionForm({ onSuccess }: TransactionFormProps) {
   const onSubmit = async (data: TransactionFormData) => {
     setLoading(true);
     try {
-      const response = await fetch('/api/transactions', {
-        method: 'POST',
+      const url = isEditing ? `/api/transactions/${transaction!.id}` : '/api/transactions';
+      const method = isEditing ? 'PATCH' : 'POST';
+      const response = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
       const result = await response.json();
 
       if (!response.ok) {
-        showError(result.error || 'Erro ao criar transação');
+        showError(result.error || (isEditing ? 'Erro ao atualizar transação' : 'Erro ao criar transação'));
         return;
       }
 
-      showSuccess('✅ Transação criada com sucesso');
-      reset({ investment_type: 'N/A', type: 'despesa', value: undefined, description: '' });
+      showSuccess(isEditing ? 'Transação atualizada com sucesso' : 'Transação criada com sucesso');
+      if (!isEditing) {
+        reset({ investment_type: 'N/A', type: 'despesa', value: undefined, description: '' });
+      }
       onSuccess?.(result.data);
     } catch {
       showError('Erro no servidor. Tente novamente.');
@@ -99,7 +113,7 @@ export function TransactionForm({ onSuccess }: TransactionFormProps) {
         <option value="Conjunto">Conjunto</option>
       </Select>
       <Button type="submit" loading={loading}>
-        Adicionar transação
+        {isEditing ? 'Salvar alterações' : 'Adicionar transação'}
       </Button>
     </form>
   );

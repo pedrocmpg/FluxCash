@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { ToastProvider } from '@/contexts/ToastContext';
 import { TransactionForm } from '../TransactionForm';
+import { Transaction } from '@/types/transaction';
 
 function renderForm() {
   return render(
@@ -9,6 +10,16 @@ function renderForm() {
     </ToastProvider>,
   );
 }
+
+const existingTransaction: Transaction = {
+  id: 'a1',
+  value: 100,
+  description: 'Mercado',
+  category: 'Alimentação',
+  type: 'despesa',
+  investment_type: 'N/A',
+  timestamp: '2026-01-01T10:00:00Z',
+};
 
 describe('TransactionForm', () => {
   afterEach(() => {
@@ -59,6 +70,29 @@ describe('TransactionForm', () => {
       expect(global.fetch).toHaveBeenCalledWith(
         '/api/transactions',
         expect.objectContaining({ method: 'POST' }),
+      );
+    });
+  });
+
+  it('pre-fills fields and submits a PATCH when editing an existing transaction', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ data: existingTransaction }),
+    }) as any;
+
+    render(
+      <ToastProvider>
+        <TransactionForm transaction={existingTransaction} />
+      </ToastProvider>,
+    );
+
+    expect(screen.getByDisplayValue('Mercado')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Salvar alterações' }));
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith(
+        '/api/transactions/a1',
+        expect.objectContaining({ method: 'PATCH' }),
       );
     });
   });

@@ -9,11 +9,16 @@ export const TransactionCreateSchema = z.object({
   investment_type: z.enum(['Individual', 'Conjunto', 'N/A']).optional(),
 });
 
+export const TransactionUpdateSchema = TransactionCreateSchema;
+
 export const TransactionFiltersSchema = z.object({
   start_date: z.string().optional(),
   end_date: z.string().optional(),
   type: z.enum(['receita', 'despesa']).optional(),
   category: z.enum(CATEGORIES).optional(),
+  search: z.string().max(200).optional(),
+  page: z.coerce.number().int().positive().optional(),
+  page_size: z.coerce.number().int().positive().max(200).optional(),
 });
 
 export const UUIDSchema = z.string().uuid('Invalid UUID format');

@@ -83,6 +83,44 @@ describe('TransactionService', () => {
     });
   });
 
+  describe('getTransactionsPage', () => {
+    it('paginates results and reports the total count', async () => {
+      const db = makeTestDb();
+      for (let i = 0; i < 3; i += 1) {
+        await TransactionService.createTransaction(db, {
+          value: 100,
+          description: `Item ${i}`,
+          type: 'despesa',
+        });
+      }
+
+      const result = await TransactionService.getTransactionsPage(db, { page: 1, page_size: 2 });
+      expect(result.items).toHaveLength(2);
+      expect(result.total).toBe(3);
+      expect(result.page).toBe(1);
+      expect(result.page_size).toBe(2);
+    });
+
+    it('applies filters when paginating', async () => {
+      const db = makeTestDb();
+      await TransactionService.createTransaction(db, {
+        value: 100,
+        description: 'Mercado',
+        type: 'despesa',
+      });
+      await TransactionService.createTransaction(db, {
+        value: 200,
+        description: 'Salário',
+        type: 'receita',
+      });
+
+      const result = await TransactionService.getTransactionsPage(db, { type: 'receita' });
+      expect(result.items).toHaveLength(1);
+      expect(result.total).toBe(1);
+      expect(result.items[0].description).toBe('Salário');
+    });
+  });
+
   describe('deleteTransaction', () => {
     it('deletes an existing transaction', async () => {
       const db = makeTestDb();
