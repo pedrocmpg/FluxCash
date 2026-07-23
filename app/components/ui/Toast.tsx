@@ -3,9 +3,9 @@
 import { useToastContext } from '@/contexts/ToastContext';
 
 const typeClasses = {
-  success: 'border-income bg-income/10 text-income',
-  error: 'border-expense bg-expense/10 text-expense',
-  info: 'border-balance bg-balance/10 text-balance',
+  success: 'border-income/30 bg-bg-card text-income',
+  error: 'border-expense/30 bg-bg-card text-expense',
+  info: 'border-balance/30 bg-bg-card text-balance',
 };
 
 export function ToastContainer() {
@@ -19,12 +19,12 @@ export function ToastContainer() {
         <div
           key={toast.id}
           role="alert"
-          className={`flex items-center justify-between gap-4 rounded-[10px] border px-4 py-3 shadow-[0_4px_16px_rgba(0,0,0,0.4)] ${typeClasses[toast.type]}`}
+          className={`flex items-center justify-between gap-4 rounded-xl border px-4 py-3 shadow-[0_12px_32px_rgba(0,0,0,0.45)] ${typeClasses[toast.type]}`}
         >
-          <span className="text-sm">{toast.message}</span>
+          <span className="text-sm text-text">{toast.message}</span>
           <button
             onClick={() => dismissToast(toast.id)}
-            className="text-xs opacity-70 hover:opacity-100"
+            className="text-xs text-text-secondary opacity-70 hover:opacity-100"
             aria-label="dismiss"
           >
             ✕
