@@ -10,4 +10,14 @@ export interface TransactionFilters {
   end_date?: string;
   type?: TransactionType;
   category?: Category;
+  search?: string;
+  page?: number;
+  page_size?: number;
+}
+
+export interface PaginatedTransactions {
+  items: import('./transaction').Transaction[];
+  total: number;
+  page: number;
+  page_size: number;
 }

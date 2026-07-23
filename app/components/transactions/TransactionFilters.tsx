@@ -1,6 +1,7 @@
 'use client';
 
 import { TransactionFilters as TransactionFiltersType } from '@/types/api';
+import { CATEGORIES } from '@/types/transaction';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
@@ -49,6 +50,29 @@ export function TransactionFilters({ filters, onChange }: TransactionFiltersProp
         <option value="receita">Receita</option>
         <option value="despesa">Despesa</option>
       </Select>
+      <Select
+        label="Categoria"
+        value={filters.category ?? ''}
+        onChange={(e) =>
+          onChange({
+            ...filters,
+            category: (e.target.value || undefined) as TransactionFiltersType['category'],
+          })
+        }
+      >
+        <option value="">Todas</option>
+        {CATEGORIES.map((category) => (
+          <option key={category} value={category}>
+            {category}
+          </option>
+        ))}
+      </Select>
+      <Input
+        label="Buscar na descrição"
+        type="text"
+        value={filters.search ?? ''}
+        onChange={(e) => onChange({ ...filters, search: e.target.value || undefined })}
+      />
 
       <div className="flex items-center gap-2">
         {activeCount > 0 && (

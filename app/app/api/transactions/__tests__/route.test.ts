@@ -28,12 +28,13 @@ beforeEach(() => {
 });
 
 describe('GET /api/transactions', () => {
-  it('returns 200 with an empty list when there are no transactions', async () => {
+  it('returns 200 with an empty page when there are no transactions', async () => {
     const response = await GET(new NextRequest('http://localhost/api/transactions'));
     const json = await response.json();
 
     expect(response.status).toBe(200);
-    expect(json.data).toEqual([]);
+    expect(json.data.items).toEqual([]);
+    expect(json.data.total).toBe(0);
   });
 
   it('returns 200 with filtered transactions', async () => {
@@ -48,8 +49,35 @@ describe('GET /api/transactions', () => {
     const json = await response.json();
 
     expect(response.status).toBe(200);
-    expect(json.data).toHaveLength(1);
-    expect(json.data[0].description).toBe('Mercado');
+    expect(json.data.items).toHaveLength(1);
+    expect(json.data.items[0].description).toBe('Mercado');
+    expect(json.data.total).toBe(1);
+  });
+
+  it('paginates results with page and page_size', async () => {
+    for (let i = 0; i < 3; i += 1) {
+      testDb
+        .prepare(
+          `INSERT INTO transactions (id, value, description, category, type, investment_type, timestamp)
+           VALUES (:id, 100, :description, 'Alimentação', 'despesa', 'N/A', :timestamp)`,
+        )
+        .run({
+          id: `id-${i}`,
+          description: `Item ${i}`,
+          timestamp: `2026-01-0${i + 1}T10:00:00.000Z`,
+        });
+    }
+
+    const response = await GET(
+      new NextRequest('http://localhost/api/transactions?page=1&page_size=2'),
+    );
+    const json = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(json.data.items).toHaveLength(2);
+    expect(json.data.total).toBe(3);
+    expect(json.data.page).toBe(1);
+    expect(json.data.page_size).toBe(2);
   });
 });
 

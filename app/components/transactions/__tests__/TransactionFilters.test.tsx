@@ -31,4 +31,22 @@ describe('TransactionFilters', () => {
     );
     expect(screen.getByText('Data inicial deve ser anterior à data final')).toBeInTheDocument();
   });
+
+  it('emits onChange when category filter changes', () => {
+    const onChange = jest.fn();
+    render(<TransactionFilters filters={{}} onChange={onChange} />);
+
+    fireEvent.change(screen.getByLabelText('Categoria'), { target: { value: 'Transporte' } });
+    expect(onChange).toHaveBeenCalledWith({ category: 'Transporte' });
+  });
+
+  it('emits onChange when search text changes', () => {
+    const onChange = jest.fn();
+    render(<TransactionFilters filters={{}} onChange={onChange} />);
+
+    fireEvent.change(screen.getByLabelText('Buscar na descrição'), {
+      target: { value: 'mercado' },
+    });
+    expect(onChange).toHaveBeenCalledWith({ search: 'mercado' });
+  });
 });

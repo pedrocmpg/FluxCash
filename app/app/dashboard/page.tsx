@@ -35,7 +35,7 @@ export default function DashboardPage() {
     transactions,
     isLoading: transactionsLoading,
     error: transactionsError,
-  } = useTransactions(dateRange);
+  } = useTransactions({ ...dateRange, page_size: 500 });
 
   const loading = summaryLoading || transactionsLoading;
   const error = summaryError || transactionsError;

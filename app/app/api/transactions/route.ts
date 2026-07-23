@@ -12,11 +12,14 @@ export async function GET(request: NextRequest) {
       end_date: searchParams.get('end_date') ?? undefined,
       type: searchParams.get('type') ?? undefined,
       category: searchParams.get('category') ?? undefined,
+      search: searchParams.get('search') ?? undefined,
+      page: searchParams.get('page') ?? undefined,
+      page_size: searchParams.get('page_size') ?? undefined,
     });
 
-    const transactions = await TransactionService.getTransactions(getDb(), filters);
+    const page = await TransactionService.getTransactionsPage(getDb(), filters);
 
-    return NextResponse.json({ data: transactions }, { status: 200 });
+    return NextResponse.json({ data: page }, { status: 200 });
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json({ error: error.issues[0].message }, { status: 400 });

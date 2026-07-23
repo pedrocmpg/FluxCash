@@ -8,17 +8,22 @@ jest.mock('next/navigation', () => ({
 }));
 
 const transactionsResponse = {
-  data: [
-    {
-      id: '1',
-      value: 500,
-      description: 'Mercado',
-      category: 'Alimentação',
-      type: 'despesa',
-      investment_type: 'N/A',
-      timestamp: '2026-01-01T10:00:00Z',
-    },
-  ],
+  data: {
+    items: [
+      {
+        id: '1',
+        value: 500,
+        description: 'Mercado',
+        category: 'Alimentação',
+        type: 'despesa',
+        investment_type: 'N/A',
+        timestamp: '2026-01-01T10:00:00Z',
+      },
+    ],
+    total: 1,
+    page: 1,
+    page_size: 50,
+  },
 };
 
 describe('TransactionsPage', () => {
