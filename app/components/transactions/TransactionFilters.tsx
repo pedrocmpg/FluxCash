@@ -22,7 +22,7 @@ export function TransactionFilters({ filters, onChange }: TransactionFiltersProp
   const handleClear = () => onChange({});
 
   return (
-    <div className="flex flex-wrap items-end gap-4 rounded-[10px] border border-border bg-bg-card p-4">
+    <div className="flex flex-wrap items-end gap-4 rounded-2xl border border-border/60 bg-bg-card p-4">
       <Input
         label="Data inicial"
         type="date"

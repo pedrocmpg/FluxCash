@@ -26,13 +26,16 @@ export default function TransactionsPage() {
 
   return (
     <MainLayout>
-      <div className="flex flex-col gap-6">
-        <h1 className="text-2xl font-bold">Transações</h1>
+      <div className="flex flex-col gap-7">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-text">Transações</h1>
+          <p className="mt-1 text-sm text-text-secondary">Histórico e lançamento de movimentações</p>
+        </div>
 
         <TransactionFilters filters={filters} onChange={handleFiltersChange} />
 
         {error && (
-          <div className="rounded-[10px] border border-expense bg-expense/10 p-4 text-sm text-expense">
+          <div className="rounded-xl border border-expense/30 bg-expense/10 p-4 text-sm text-expense">
             {error.message}
           </div>
         )}
@@ -65,8 +68,8 @@ export default function TransactionsPage() {
           </div>
         )}
 
-        <div className="rounded-[14px] border border-border bg-bg-card p-4">
-          <h2 className="mb-4 font-semibold">Nova transação</h2>
+        <div className="rounded-2xl border border-border/60 bg-bg-card p-5">
+          <h2 className="mb-4 text-sm font-semibold text-text">Nova transação</h2>
           <TransactionForm onSuccess={() => refetch()} />
         </div>
       </div>

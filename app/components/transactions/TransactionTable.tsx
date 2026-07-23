@@ -23,17 +23,17 @@ export function TransactionTable({ transactions, loading = false }: TransactionT
     return (
       <div
         role="status"
-        className="animate-pulse rounded-[10px] border border-border bg-bg-card p-6"
+        className="animate-pulse rounded-2xl border border-border/60 bg-bg-card p-6"
       >
-        <div className="h-40 rounded bg-bg-hover" />
+        <div className="h-40 rounded-xl bg-bg-hover" />
       </div>
     );
   }
 
   if (transactions.length === 0) {
     return (
-      <div className="rounded-[10px] border border-border bg-bg-card p-8 text-center text-text-secondary">
-        <p>Nenhuma transação encontrada.</p>
+      <div className="rounded-2xl border border-border/60 bg-bg-card p-10 text-center text-text-secondary">
+        <p className="text-sm font-medium text-text">Nenhuma transação encontrada</p>
         <p className="mt-1 text-sm">Ajuste os filtros ou adicione uma nova transação.</p>
       </div>
     );
@@ -59,47 +59,51 @@ export function TransactionTable({ transactions, loading = false }: TransactionT
   };
 
   return (
-    <div className="overflow-x-auto rounded-[10px] border border-border">
+    <div className="overflow-x-auto rounded-2xl border border-border/60 bg-bg-card">
       <table className="w-full min-w-[720px] border-collapse text-sm">
         <thead>
-          <tr className="border-b border-border bg-bg-card text-left text-text-secondary">
-            <th className="px-4 py-3">Data</th>
-            <th className="px-4 py-3">Descrição</th>
-            <th className="px-4 py-3">Categoria</th>
-            <th className="px-4 py-3">Tipo</th>
-            <th className="px-4 py-3">Valor (R$)</th>
-            <th className="px-4 py-3">Investimento</th>
-            <th className="px-4 py-3">Ações</th>
+          <tr className="border-b border-border/60 text-left text-xs font-medium tracking-wide text-text-secondary uppercase">
+            <th className="px-4 py-3 font-medium">Data</th>
+            <th className="px-4 py-3 font-medium">Descrição</th>
+            <th className="px-4 py-3 font-medium">Categoria</th>
+            <th className="px-4 py-3 font-medium">Tipo</th>
+            <th className="px-4 py-3 font-medium">Valor</th>
+            <th className="px-4 py-3 font-medium">Investimento</th>
+            <th className="px-4 py-3 font-medium">Ações</th>
           </tr>
         </thead>
         <tbody>
           {transactions.map((t) => (
-            <tr key={t.id} className="border-b border-border last:border-0">
-              <td className="px-4 py-3 whitespace-nowrap">{formatDateTime(t.timestamp)}</td>
-              <td className="px-4 py-3">{t.description}</td>
-              <td className="px-4 py-3">{t.category}</td>
-              <td
-                className={`px-4 py-3 font-medium ${t.type === 'receita' ? 'text-income' : 'text-expense'}`}
-              >
-                {t.type}
+            <tr key={t.id} className="border-b border-border/60 transition-colors last:border-0 hover:bg-bg-hover/50">
+              <td className="px-4 py-3 whitespace-nowrap text-text-secondary">{formatDateTime(t.timestamp)}</td>
+              <td className="px-4 py-3 text-text">{t.description}</td>
+              <td className="px-4 py-3 text-text-secondary">{t.category}</td>
+              <td className="px-4 py-3">
+                <span
+                  className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
+                    t.type === 'receita' ? 'bg-income/10 text-income' : 'bg-expense/10 text-expense'
+                  }`}
+                >
+                  {t.type}
+                </span>
               </td>
-              <td className="px-4 py-3 whitespace-nowrap">{formatCurrency(t.value)}</td>
+              <td className="px-4 py-3 whitespace-nowrap font-medium text-text">{formatCurrency(t.value)}</td>
               <td className="px-4 py-3">
                 {t.investment_type === 'Conjunto' ? (
-                  <span className="rounded-full border border-investment px-2 py-0.5 text-xs text-investment">
+                  <span className="rounded-full border border-investment/30 bg-investment/10 px-2 py-0.5 text-xs text-investment">
                     Conjunto
                   </span>
                 ) : (
-                  t.investment_type
+                  <span className="text-text-secondary">{t.investment_type}</span>
                 )}
               </td>
               <td className="px-4 py-3">
-                <div className="flex gap-2">
+                <div className="flex gap-1">
                   <button
                     type="button"
                     aria-label={`Editar transação ${t.description}`}
                     onClick={() => setEditing(t)}
-                    className="rounded-[8px] p-1.5 text-text-secondary hover:bg-bg-hover hover:text-text"
+                    className="rounded-lg p-1.5 text-text-secondary transition-colors hover:bg-bg-hover hover:text-text"
                   >
                     <PencilIcon />
                   </button>
@@ -107,7 +111,7 @@ export function TransactionTable({ transactions, loading = false }: TransactionT
                     type="button"
                     aria-label={`Excluir transação ${t.description}`}
                     onClick={() => setDeleting(t)}
-                    className="rounded-[8px] p-1.5 text-text-secondary hover:bg-expense/10 hover:text-expense"
+                    className="rounded-lg p-1.5 text-text-secondary transition-colors hover:bg-expense/10 hover:text-expense"
                   >
                     <TrashIcon />
                   </button>
@@ -117,8 +121,8 @@ export function TransactionTable({ transactions, loading = false }: TransactionT
           ))}
         </tbody>
         <tfoot>
-          <tr className="border-t border-border bg-bg-card font-medium">
-            <td className="px-4 py-3" colSpan={3}>
+          <tr className="border-t border-border/60 font-medium">
+            <td className="px-4 py-3 text-text-secondary" colSpan={3}>
               Resumo
             </td>
             <td className="px-4 py-3 text-income">{formatCurrency(totalReceitas)}</td>

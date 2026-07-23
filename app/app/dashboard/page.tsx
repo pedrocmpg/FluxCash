@@ -42,10 +42,13 @@ export default function DashboardPage() {
 
   return (
     <MainLayout>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-7">
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <div className="flex gap-4">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight text-text">Dashboard</h1>
+            <p className="mt-1 text-sm text-text-secondary">Visão geral das suas finanças</p>
+          </div>
+          <div className="flex gap-3">
             <Input
               label="Data inicial"
               type="date"
@@ -66,7 +69,7 @@ export default function DashboardPage() {
         </div>
 
         {error && (
-          <div className="rounded-[10px] border border-expense bg-expense/10 p-4 text-sm text-expense">
+          <div className="rounded-xl border border-expense/30 bg-expense/10 p-4 text-sm text-expense">
             {error.message}
           </div>
         )}
@@ -77,21 +80,21 @@ export default function DashboardPage() {
           <>
             <KPICards summary={summary} />
 
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              <div className="rounded-[14px] border border-border bg-bg-card p-4">
-                <h2 className="mb-4 font-semibold">Receitas x Despesas</h2>
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+              <div className="rounded-2xl border border-border/60 bg-bg-card p-5">
+                <h2 className="mb-4 text-sm font-semibold text-text">Receitas x Despesas</h2>
                 <IncomeExpenseBarChart transactions={transactions} />
               </div>
-              <div className="rounded-[14px] border border-border bg-bg-card p-4">
-                <h2 className="mb-4 font-semibold">Despesas por categoria</h2>
+              <div className="rounded-2xl border border-border/60 bg-bg-card p-5">
+                <h2 className="mb-4 text-sm font-semibold text-text">Despesas por categoria</h2>
                 <ExpenseDonutChart transactions={transactions} />
               </div>
-              <div className="rounded-[14px] border border-border bg-bg-card p-4">
-                <h2 className="mb-4 font-semibold">Evolução do saldo</h2>
+              <div className="rounded-2xl border border-border/60 bg-bg-card p-5">
+                <h2 className="mb-4 text-sm font-semibold text-text">Evolução do saldo</h2>
                 <BalanceTrendChart transactions={transactions} />
               </div>
-              <div className="rounded-[14px] border border-border bg-bg-card p-4">
-                <h2 className="mb-4 font-semibold">Investimentos</h2>
+              <div className="rounded-2xl border border-border/60 bg-bg-card p-5">
+                <h2 className="mb-4 text-sm font-semibold text-text">Investimentos</h2>
                 <InvestmentTimelineChart transactions={transactions} />
               </div>
             </div>

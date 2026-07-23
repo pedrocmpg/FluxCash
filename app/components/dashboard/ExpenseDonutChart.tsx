@@ -73,6 +73,8 @@ export function ExpenseDonutChart({ transactions }: ExpenseDonutChartProps) {
           contentStyle={{
             background: theme.colors.bgCard,
             border: `1px solid ${theme.colors.border}`,
+            borderRadius: '12px',
+            fontSize: '13px',
           }}
         />
         <Legend />

@@ -59,9 +59,11 @@ export function BalanceTrendChart({ transactions }: BalanceTrendChartProps) {
           contentStyle={{
             background: theme.colors.bgCard,
             border: `1px solid ${theme.colors.border}`,
+            borderRadius: '12px',
+            fontSize: '13px',
           }}
         />
-        <Area type="monotone" dataKey="balance" stroke={theme.colors.primary} fill="#4ade8026" />
+        <Area type="monotone" dataKey="balance" stroke={theme.colors.primary} fill="#34d39926" />
       </AreaChart>
     </ResponsiveContainer>
   );
