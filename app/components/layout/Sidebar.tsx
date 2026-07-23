@@ -7,6 +7,7 @@ import { ReactNode } from 'react';
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'Dashboard', icon: DashboardIcon },
   { href: '/transactions', label: 'Transações', icon: TransactionsIcon },
+  { href: '/import', label: 'Importar extrato', icon: ImportIcon },
 ];
 
 interface SidebarProps {
@@ -92,6 +93,16 @@ function TransactionsIcon(): ReactNode {
     <svg {...iconProps()}>
       <path d="M7 8h13M7 8l-3-3M7 8l-3 3" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M17 16H4M17 16l3-3M17 16l3 3" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ImportIcon(): ReactNode {
+  return (
+    <svg {...iconProps()}>
+      <path d="M12 3v12" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M7 10l5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M4 19h16" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
