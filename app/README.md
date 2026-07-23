@@ -1,12 +1,12 @@
 # FluxCash
 
-Aplicação de gestão financeira pessoal com categorização automática de transações e acompanhamento de investimentos. Migrado de Python/Streamlit para Next.js (App Router) + TypeScript + Supabase.
+Aplicação de gestão financeira pessoal com categorização automática de transações e acompanhamento de investimentos. 100% local: dados armazenados em um arquivo SQLite no disco, sem serviços externos.
 
 ## Stack
 
 - Next.js 16 (App Router) + React 19 + TypeScript
 - Tailwind CSS (tema dark/neon)
-- Supabase (PostgreSQL + Auth)
+- SQLite local (`node:sqlite`)
 - Zod para validação
 - React Query para estado de servidor
 - React Hook Form para formulários
@@ -15,28 +15,13 @@ Aplicação de gestão financeira pessoal com categorização automática de tra
 
 ## Configuração local
 
-### 1. Variáveis de ambiente
-
-Copie `.env.example` para `.env.local` e preencha com as credenciais do seu projeto Supabase:
-
-```bash
-cp .env.example .env.local
-```
-
-| Variável                        | Descrição                                                 |
-| ------------------------------- | --------------------------------------------------------- |
-| `NEXT_PUBLIC_SUPABASE_URL`      | URL do projeto Supabase (`https://<projeto>.supabase.co`) |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Chave anônima (pública) do Supabase                       |
-
-Essas variáveis são expostas ao cliente (prefixo `NEXT_PUBLIC_`) pois o Supabase usa Row Level Security (RLS) para proteger os dados — nunca exponha a `service_role` key no frontend.
-
-### 2. Instalar dependências
+### 1. Instalar dependências
 
 ```bash
 npm install
 ```
 
-### 3. Rodar em desenvolvimento
+### 2. Rodar em desenvolvimento
 
 ```bash
 npm run dev
@@ -55,16 +40,8 @@ Acesse [http://localhost:3000](http://localhost:3000).
 | `npm run lint`   | Executa o ESLint                                         |
 | `npm run format` | Formata o código com Prettier                            |
 
-## Deploy no Vercel
-
-1. Crie um novo projeto no [Vercel](https://vercel.com/new) apontando para este repositório (diretório `app/` como root).
-2. Configure as variáveis de ambiente no painel do Vercel (Settings → Environment Variables):
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - `ALLOWED_ORIGIN` (opcional — domínio de produção para CORS, ex: `https://seu-dominio.vercel.app`)
-3. O Vercel detecta automaticamente o framework Next.js e usa as configurações em `vercel.json`.
-4. Clique em Deploy. O banco de dados Supabase já existente é reutilizado sem necessidade de migração.
-
 ## Banco de dados
 
-Este projeto reutiliza um banco Supabase PostgreSQL já existente, com a tabela `transactions` e Row Level Security (RLS) habilitada para isolar os dados por usuário. Nenhuma migração de schema é necessária.
+Os dados são armazenados em `data/fluxcash.db`, um arquivo SQLite criado automaticamente na raiz do projeto na primeira execução. Não requer nenhum serviço externo nem configuração — o arquivo fica fora do controle de versão (`.gitignore`).
+
+Por depender de um arquivo local em disco, este projeto não é compatível com deploys serverless (Vercel, etc.) sem adaptação — foi desenhado para rodar localmente ou em um servidor com disco persistente.

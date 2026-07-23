@@ -33,7 +33,6 @@ export interface Transaction {
   type: TransactionType;
   investment_type: InvestmentType;
   timestamp: string;
-  user_id: string;
 }
 
 export interface TransactionCreate {

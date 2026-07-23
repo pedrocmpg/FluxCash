@@ -11,7 +11,6 @@ const transactions: Transaction[] = [
     type: 'receita',
     investment_type: 'N/A',
     timestamp: '2026-01-01T10:00:00Z',
-    user_id: 'u1',
   },
   {
     id: 'a2',
@@ -21,7 +20,6 @@ const transactions: Transaction[] = [
     type: 'despesa',
     investment_type: 'Conjunto',
     timestamp: '2026-01-02T10:00:00Z',
-    user_id: 'u1',
   },
 ];
 

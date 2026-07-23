@@ -2,16 +2,6 @@ import { screen, waitFor, fireEvent } from '@testing-library/react';
 import { renderWithProviders } from '@/lib/test-utils/renderWithProviders';
 import TransactionsPage from '../page';
 
-jest.mock('@/contexts/AuthContext', () => ({
-  useAuthContext: () => ({
-    user: { id: 'u1', email: 'test@example.com' },
-    loading: false,
-    login: jest.fn(),
-    register: jest.fn(),
-    logout: jest.fn(),
-  }),
-}));
-
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ replace: jest.fn(), push: jest.fn() }),
   usePathname: () => '/transactions',
@@ -27,7 +17,6 @@ const transactionsResponse = {
       type: 'despesa',
       investment_type: 'N/A',
       timestamp: '2026-01-01T10:00:00Z',
-      user_id: 'u1',
     },
   ],
 };
