@@ -20,7 +20,7 @@ export function MainLayout({ children }: MainLayoutProps) {
             aria-label="Abrir menu"
             aria-expanded={mobileNavOpen}
             onClick={() => setMobileNavOpen(true)}
-            className="flex items-center justify-center rounded-[10px] p-2 text-text-secondary hover:bg-bg-hover hover:text-text md:hidden"
+            className="flex items-center justify-center rounded-xl p-2 text-text-secondary hover:bg-bg-hover hover:text-text md:hidden"
           >
             <MenuIcon />
           </button>
@@ -28,7 +28,9 @@ export function MainLayout({ children }: MainLayoutProps) {
       />
       <div className="flex flex-1">
         <Sidebar open={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
-        <main className="min-w-0 flex-1 p-6">{children}</main>
+        <main className="min-w-0 flex-1 p-6 md:p-8">
+          <div className="mx-auto w-full max-w-6xl">{children}</div>
+        </main>
       </div>
     </div>
   );
