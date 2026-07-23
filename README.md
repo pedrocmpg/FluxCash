@@ -1,49 +1,103 @@
-# 💸🌙 FluxCash - Personal Finance Manager
+# 💸🌙 FluxCash — Personal Finance Manager
 
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Status: On Hold](https://img.shields.io/badge/status-on%20hold-orange.svg)](#)
+[![Next.js 16](https://img.shields.io/badge/Next.js-16-black.svg)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue.svg)](https://www.typescriptlang.org/)
+[![Status: Active (local-only)](https://img.shields.io/badge/status-active%20(local--only)-brightgreen.svg)](#)
 
-**FluxCash** is a modern, automated personal financial management application built with **Python** and **PySide6**. It is engineered to streamline asset tracking, optimize monthly budget distributions, and automate expense classification using local data processing, wrapped in a high-contrast dark/neon user interface.
+**FluxCash** is a personal financial management app for tracking income, expenses, and investments, with automatic transaction categorization and a dashboard of KPIs and charts. It runs **100% locally** — no cloud, no auth, no external services — built as a learning project (Systems Analysis and Development).
 
-> ⚠️ **Project Status: On Hold** – This repository is currently paused for architectural refactoring. The core authentication modules, manual ledger architecture, and string-parsing categorization logic are fully functional.
-
----
-
-## 📸 Preview
-*Insert a dark/neon screenshot of your FluxCash PySide6 interface or login screen here!*
+> Originally built with Python/Streamlit, then migrated to React/Next.js. Was briefly on Supabase (Postgres + cloud auth), then migrated again to a fully local SQLite setup, since this is a single-user app with no need for multi-user support or cloud data.
 
 ---
 
-## ⚡ Core Architecture & Engineering
+## ⚡ Quick Start
 
-### 🧠 Reverse Keyword Mapping (Automated Categorization)
-Instead of forcing users to manually assign categories to every transaction, FluxCash implements a string-parsing algorithm that reads transaction descriptions (e.g., `UBER *TRIP` or `NETFLIX COM`) and automatically maps them to pre-defined financial categories (`Transport`, `Entertainment`). This significantly reduces user friction during ledger updates.
+```bash
+cd app
+npm install
+npm run dev
+```
 
-### 🔒 Secure Authentication Layer
-The software features a fully implemented login system equipped with strict **email format validation** and credential verification, ensuring that personal financial ledgers remain isolated and secure on local deployments.
+Open `http://localhost:3000`.
+
+No environment variables, database server, or account setup required — data is stored in a local SQLite file via Node's native `node:sqlite`.
 
 ---
 
 ## ✨ Features
 
-* **[x] Secure Authentication:** Login screen with robust email formatting checks and credential validation.
-* **[x] Reverse Mapping Engine:** Automated transaction tagging using contextual keyword parsing.
-* **[x] Manual Financial Ledger:** Full CRUD capabilities to track income, expenses, and current available balance.
-* **[ ] Automated Investment Rules (Roadmap):** Calculation of remaining disposable income against strict monthly investment targets.
-* **[ ] Shared Portfolio Logic (Roadmap):** Multi-user contribution tracking designed for joint portfolios or shared couples' investments, computing proportional capital injection.
+* **Automatic transaction categorization** — keyword-matching engine reads descriptions (e.g. `UBER *TRIP`, `NETFLIX COM`) and maps them to categories (Alimentação, Transporte, Saúde, Educação, Lazer, Moradia, Investimento, Receita, Outros).
+* **Full transaction CRUD** — create, edit, and delete directly from the transactions table (inline row actions + modals), with filtering by date range, type, category, and text search.
+* **Real pagination** — the transaction list and API are properly paginated (no more silent 500-row cutoffs).
+* **Dashboard with KPIs and charts** — income/expense bar chart, expense breakdown donut, cumulative balance area chart, and investment timeline (via Recharts).
+* **Shared-contribution tag** — `#conjunto` in a description marks a transaction as part of a joint/shared investment.
+* **Responsive layout** — sidebar collapses into a mobile drawer with overlay.
+
+### Known limitations (by design, for now)
+* Category engine is hardcoded keyword matching — no plurals/synonyms beyond the fixed list, no learning from user corrections.
+* No CSV/OFX statement import, no recurring transactions, no E2E tests (Playwright).
+* No dedicated `/investments` page — investment data currently lives only in the dashboard timeline chart.
+* No rate limiting or security hardening — intentionally out of scope while the app runs local-only with no deploy planned.
 
 ---
 
 ## 🛠️ Technology Stack
 
-* **Language:** Python 3.10+
-* **GUI Framework:** PySide6 (Qt for Python)
-* **Database / Backend Concept:** Modular architecture prepared for lightweight data persistence and relational user structures.
+* **Framework:** Next.js 16 (App Router) + React 19 + TypeScript
+* **Styling:** Tailwind CSS 4
+* **Data:** SQLite via `node:sqlite` (native, experimental) — no Supabase, no auth, no cloud
+* **Validation:** Zod
+* **Server state:** TanStack React Query
+* **Forms:** React Hook Form
+* **Charts:** Recharts
+* **Testing:** Jest + React Testing Library (73 tests — services, API routes, components, integration)
+
+---
+
+## 📁 Project Structure (`app/`)
+
+```
+app/
+├── app/                    # Next.js App Router
+│   ├── dashboard/          # KPIs + charts
+│   ├── transactions/       # table, filters, create/edit form
+│   └── api/
+│       ├── transactions/   # GET (paginated), POST, PATCH/DELETE by id
+│       └── summary/        # dashboard summary data
+├── components/
+│   ├── dashboard/          # KPICards + 4 charts
+│   ├── transactions/       # TransactionTable, Filters, Form
+│   ├── layout/             # Header, Sidebar (mobile drawer), MainLayout
+│   └── ui/                 # Button, Input, Select, Card, Toast, Modal, ...
+├── contexts/               # ToastContext, QueryProvider
+├── hooks/                  # useTransactions, useTransactionMutations, useSummary, useToast
+├── lib/
+│   ├── db/                 # local SQLite client
+│   ├── services/           # transactionService, summaryService, categoryEngine
+│   ├── validation/         # Zod schemas
+│   └── utils/              # formatters, text normalization
+└── types/
+```
+
+---
+
+## 🎨 Theme
+
+Dark/neon palette: background `#0d1117`, cards `#161b22`, primary `#4ade80`, income `#22c55e`, expense `#f87171`, investment `#fbbf24`.
+
+---
+
+## 🧪 Testing
+
+```bash
+cd app
+npm test
+```
+
+73 tests across Jest environments `jsdom` (components) and `node` (API routes, via `@jest-environment node`).
 
 ---
 
 ## 📧 Contact
-Developed by **Pedro Campagnolo**. Check the repository documentation for setup instructions or structural breakdowns.
 
-**FluxCash** - Automating financial flow with high-contrast precision. 💸
+Developed by **Pedro Campagnolo**.
