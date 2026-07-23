@@ -33,6 +33,7 @@ export interface Transaction {
   type: TransactionType;
   investment_type: InvestmentType;
   timestamp: string;
+  external_id: string | null;
 }
 
 export interface TransactionCreate {
@@ -41,4 +42,7 @@ export interface TransactionCreate {
   category?: Category;
   type: TransactionType;
   investment_type?: InvestmentType;
+  external_id?: string | null;
+  document?: string | null;
+  timestamp?: string;
 }

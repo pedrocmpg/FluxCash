@@ -21,7 +21,28 @@ export function getDb(): DatabaseSync {
       category TEXT NOT NULL,
       type TEXT NOT NULL,
       investment_type TEXT NOT NULL,
-      timestamp TEXT NOT NULL
+      timestamp TEXT NOT NULL,
+      external_id TEXT
+    )
+  `);
+
+  const columns = db.prepare(`PRAGMA table_info(transactions)`).all() as unknown as {
+    name: string;
+  }[];
+  if (!columns.some((column) => column.name === 'external_id')) {
+    db.exec(`ALTER TABLE transactions ADD COLUMN external_id TEXT`);
+  }
+
+  db.exec(`
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_transactions_external_id
+      ON transactions(external_id) WHERE external_id IS NOT NULL
+  `);
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS merchant_rules (
+      document TEXT PRIMARY KEY,
+      category TEXT NOT NULL,
+      updated_at TEXT NOT NULL
     )
   `);
 

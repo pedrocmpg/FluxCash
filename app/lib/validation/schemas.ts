@@ -7,6 +7,9 @@ export const TransactionCreateSchema = z.object({
   category: z.enum(CATEGORIES).optional(),
   type: z.enum(['receita', 'despesa']),
   investment_type: z.enum(['Individual', 'Conjunto', 'N/A']).optional(),
+  external_id: z.string().max(200).nullable().optional(),
+  document: z.string().max(20).nullable().optional(),
+  timestamp: z.string().optional(),
 });
 
 export const TransactionUpdateSchema = TransactionCreateSchema;
