@@ -76,7 +76,10 @@ copies to keep in sync (no shared test helper for this yet).
    lookaround regex `(?<![a-z0-9])keyword(?![a-z0-9])`, not `\b` (which doesn't split digit-digit)
    and not plain `.includes()` (which used to false-positive: `'99'` matched inside any account
    number containing those two digits, `'gas'` matched inside surnames like "Campagnolo" — fixed
-   2026-07-24).
+   2026-07-24). Watch for keywords that are substrings of unrelated bank-generated phrasing: `'pagamento'`
+   under `Receita` used to match `PAGAMENTO PIX - ...` (a Sicredi **debit** description prefix),
+   miscategorizing real expenses as income during CSV import — replaced with `'recebimento'` (fixed
+   2026-07-24, see `RECEBIMENTO PIX` vs `PAGAMENTO PIX` prefixes in the Sicredi export).
 3. **"Outros"** if nothing matches.
 
 This is deliberately rule-based, not statistical — see the project's memory notes if this comes up

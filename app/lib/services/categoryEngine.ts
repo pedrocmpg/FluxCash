@@ -38,7 +38,7 @@ const CATEGORY_KEYWORDS: Record<Exclude<Category, 'Outros'>, string[]> = {
   Lazer: ['cinema', 'netflix', 'spotify', 'show', 'viagem', 'hotel', 'jogo', 'streaming'],
   Moradia: ['aluguel', 'condominio', 'agua', 'luz', 'energia', 'internet', 'gas', 'iptu'],
   Investimento: ['tesouro', 'acoes', 'fundo', 'cdb', 'poupanca', 'cripto', 'dividendo', 'acao'],
-  Receita: ['salario', 'freelance', 'renda', 'pagamento', 'transferencia recebida', 'bonus'],
+  Receita: ['salario', 'freelance', 'renda', 'recebimento', 'transferencia recebida', 'bonus'],
 };
 
 const CONJUNTO_REGEX = /#conjunto\b/i;
