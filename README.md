@@ -26,7 +26,8 @@ No environment variables, database server, or account setup required — data is
 
 ## ✨ Features
 
-* **Automatic transaction categorization** — keyword-matching engine reads descriptions (e.g. `UBER *TRIP`, `NETFLIX COM`) and maps them to categories (Alimentação, Transporte, Saúde, Educação, Lazer, Moradia, Investimento, Receita, Outros).
+* **Automatic transaction categorization, in layers** — a saved rule by the counterparty's CNPJ/CPF (learned from your manual corrections) takes priority, then a keyword-matching engine reads descriptions (e.g. `UBER *TRIP`, `NETFLIX COM`) and maps them to categories (Alimentação, Transporte, Saúde, Educação, Lazer, Moradia, Investimento, Receita, Outros).
+* **CSV statement import** — upload a bank statement CSV (currently Sicredi's export format), review/adjust the suggested category per row, and confirm; duplicate re-imports are detected and skipped automatically.
 * **Full transaction CRUD** — create, edit, and delete directly from the transactions table (inline row actions + modals), with filtering by date range, type, category, and text search.
 * **Real pagination** — the transaction list and API are properly paginated (no more silent 500-row cutoffs).
 * **Dashboard with KPIs and charts** — income/expense bar chart, expense breakdown donut, cumulative balance area chart, and investment timeline (via Recharts).
@@ -34,8 +35,8 @@ No environment variables, database server, or account setup required — data is
 * **Responsive layout** — sidebar collapses into a mobile drawer with overlay.
 
 ### Known limitations (by design, for now)
-* Category engine is hardcoded keyword matching — no plurals/synonyms beyond the fixed list, no learning from user corrections.
-* No CSV/OFX statement import, no recurring transactions, no E2E tests (Playwright).
+* CSV import only supports Sicredi's export format so far — no OFX, no other banks yet.
+* No recurring transactions, no E2E tests (Playwright).
 * No dedicated `/investments` page — investment data currently lives only in the dashboard timeline chart.
 * No rate limiting or security hardening — intentionally out of scope while the app runs local-only with no deploy planned.
 
@@ -50,7 +51,7 @@ No environment variables, database server, or account setup required — data is
 * **Server state:** TanStack React Query
 * **Forms:** React Hook Form
 * **Charts:** Recharts
-* **Testing:** Jest + React Testing Library (73 tests — services, API routes, components, integration)
+* **Testing:** Jest + React Testing Library (99 tests — services, API routes, components, integration)
 
 ---
 
@@ -61,8 +62,10 @@ app/
 ├── app/                    # Next.js App Router
 │   ├── dashboard/          # KPIs + charts
 │   ├── transactions/       # table, filters, create/edit form
+│   ├── import/             # CSV statement import (upload + review)
 │   └── api/
 │       ├── transactions/   # GET (paginated), POST, PATCH/DELETE by id
+│       ├── import/         # preview + confirm for statement import
 │       └── summary/        # dashboard summary data
 ├── components/
 │   ├── dashboard/          # KPICards + 4 charts
@@ -70,10 +73,10 @@ app/
 │   ├── layout/             # Header, Sidebar (mobile drawer), MainLayout
 │   └── ui/                 # Button, Input, Select, Card, Toast, Modal, ...
 ├── contexts/               # ToastContext, QueryProvider
-├── hooks/                  # useTransactions, useTransactionMutations, useSummary, useToast
+├── hooks/                  # useTransactions, useTransactionMutations, useSummary, useToast, useStatementImport
 ├── lib/
 │   ├── db/                 # local SQLite client
-│   ├── services/           # transactionService, summaryService, categoryEngine
+│   ├── services/           # transactionService, summaryService, categoryEngine, merchantRuleService, statementParser, statementImportService
 │   ├── validation/         # Zod schemas
 │   └── utils/              # formatters, text normalization
 └── types/
@@ -94,7 +97,7 @@ cd app
 npm test
 ```
 
-73 tests across Jest environments `jsdom` (components) and `node` (API routes, via `@jest-environment node`).
+99 tests across Jest environments `jsdom` (components) and `node` (API routes, via `@jest-environment node`).
 
 ---
 
